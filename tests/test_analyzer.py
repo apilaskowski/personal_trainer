@@ -143,6 +143,34 @@ class TestAnalyzer(unittest.TestCase):
         self.assertEqual(rec[0], "Hamstrings")
         self.assertEqual(rec[1], "Back")
 
+    def test_secondary_muscle_half_set_weighting(self):
+        """Primary muscle gets 1.0 set credit, secondary muscle gets 0.5 set credit."""
+        workouts = [
+            {
+                "id": "w1",
+                "start_time": (self.now - timedelta(hours=10)).isoformat(),
+                "exercises": [
+                    {
+                        "exercise_template_id": "mock-bench",
+                        "title": "Flat Bench Press",
+                        "sets": [
+                            {"set_type": "normal", "weight_kg": 80, "reps": 10},
+                            {"set_type": "normal", "weight_kg": 80, "reps": 10},
+                            {"set_type": "normal", "weight_kg": 80, "reps": 10}
+                        ]
+                    }
+                ]
+            }
+        ]
+        goals = {"Chest": 10, "Triceps": 10}
+        res = analyze_workouts(workouts, weekly_goals=goals, current_time=self.now)
+        muscles = {m["name"]: m for m in res["muscles"]}
+        self.assertEqual(muscles["Chest"]["sets_7d"], 3)
+        self.assertEqual(muscles["Triceps"]["sets_7d"], 1.5)
+        self.assertEqual(muscles["Chest"]["deficit_7d"], 7)
+        self.assertEqual(muscles["Triceps"]["deficit_7d"], 8.5)
+        self.assertEqual(muscles["Triceps"]["recovery_status"], "resting")
+
     def test_json_serializability(self):
         """Verify the output can be directly serialized to JSON with no datetime errors."""
         res = analyze_workouts([], weekly_goals=self.goals, current_time=self.now)

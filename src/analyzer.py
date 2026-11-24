@@ -54,8 +54,8 @@ def analyze_workouts(workouts: list[dict], weekly_goals: dict = None, current_ti
         for ex in w.get("exercises", []):
             title = ex.get("title", "")
             template_id = ex.get("exercise_template_id")
-            # Resolves via on-demand Hevy cache, fallback map, or heuristics
-            muscles = resolve_exercise_muscles(title, template_id=template_id, api_key=api_key)
+            # Resolves via on-demand Hevy cache
+            muscle_weights = resolve_exercise_muscles(title, template_id=template_id, api_key=api_key)
 
             # Count working sets (exclude warmups)
             working_sets = sum(
@@ -64,7 +64,7 @@ def analyze_workouts(workouts: list[dict], weekly_goals: dict = None, current_ti
             )
             total_working_sets += working_sets
 
-            for m in muscles:
+            for m, weight in muscle_weights.items():
                 if m in muscle_stats:
                     workout_muscles_hit.add(m)
                     # Update most recent workout timestamp
@@ -72,11 +72,12 @@ def analyze_workouts(workouts: list[dict], weekly_goals: dict = None, current_ti
                         muscle_stats[m]["last_trained"] = w_time
                         muscle_stats[m]["hours_since_last"] = round(hours_ago, 1)
 
-                    # Rolling volume windows
+                    # Rolling volume windows (1.0 primary, 0.5 secondary)
+                    earned = working_sets * weight
                     if days_ago <= 7.0:
-                        muscle_stats[m]["sets_7d"] += working_sets
+                        muscle_stats[m]["sets_7d"] += earned
                     if days_ago <= 14.0:
-                        muscle_stats[m]["sets_14d"] += working_sets
+                        muscle_stats[m]["sets_14d"] += earned
 
         processed_workouts.append({
             "id": w.get("id"),
@@ -115,9 +116,17 @@ def analyze_workouts(workouts: list[dict], weekly_goals: dict = None, current_ti
         if stat["last_trained"]:
             stat["last_trained"] = stat["last_trained"].isoformat()
 
+        # Clean numerical formatting (format whole numbers as ints, half sets as floats)
+        def clean_val(v: float):
+            r = round(v, 1)
+            return int(r) if r % 1 == 0 else r
+
+        stat["sets_7d"] = clean_val(stat["sets_7d"])
+        stat["sets_14d"] = clean_val(stat["sets_14d"])
+
         # Progress and deficit
         stat["progress_7d"] = round((stat["sets_7d"] / stat["weekly_target"]) * 100)
-        stat["deficit_7d"] = max(0, stat["weekly_target"] - stat["sets_7d"])
+        stat["deficit_7d"] = clean_val(max(0.0, stat["weekly_target"] - stat["sets_7d"]))
 
     # Determine "What to Train Today"
     # Rule: Filter for READY muscles (>= 48h rest), sort by largest volume deficit
