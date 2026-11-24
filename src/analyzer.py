@@ -144,7 +144,7 @@ def analyze_workouts(
         stat["deficit_7d"] = clean_val(max(0.0, stat["weekly_target"] - stat["sets_7d"]))
 
     # Determine "What to Train Today"
-    # Rule: Filter for READY muscles (>= 48h rest), sort by largest volume deficit
+    # Rule: Filter for READY muscles (met full required recovery window), sort by largest volume deficit
     ready_muscles = [s for s in muscle_stats.values() if s["recovery_status"] == "ready"]
     ready_muscles.sort(key=lambda x: (x["deficit_7d"], -x["sets_7d"]), reverse=True)
 
@@ -160,7 +160,7 @@ def analyze_workouts(
         "today_recommendation": {
             "focus_muscles": recommended_focus,
             "headline": headline,
-            "summary": "These muscles have had full 48h+ rest and are currently highest priority for your rolling 7-day volume goals."
+            "summary": "These muscles have had full required rest and are currently highest priority for your rolling 7-day volume goals."
         },
         "muscles": list(muscle_stats.values()),
         "recent_workouts": processed_workouts[:6]

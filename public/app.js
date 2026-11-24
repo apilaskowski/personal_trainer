@@ -3,7 +3,7 @@ let currentWindow = "7d"; // "7d" or "14d"
 
 async function init() {
   try {
-    const res = await fetch("data.json");
+    const res = await fetch(`data.json?t=${Date.now()}`);
     if (!res.ok) throw new Error("Could not load data.json");
     appData = await res.json();
     render();
