@@ -1,9 +1,9 @@
 """
 Workout Analysis and Recommendation Engine for Personal Trainer.
 Computes:
-1. 48-Hour Independent Muscle Recovery States.
-2. Rolling 7-day and 14-day working set volumes vs. weekly targets.
-3. Prioritized 'What to Train Today' focus recommendations.
+- 48-Hour Independent Muscle Recovery States.
+- Rolling 7-day and 14-day working set volumes vs. weekly targets.
+- Prioritized 'What to Train Today' focus recommendations.
 """
 
 from datetime import datetime, timezone

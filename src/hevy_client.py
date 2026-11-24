@@ -109,19 +109,19 @@ def fetch_template_from_hevy(template_id: str, api_key: str) -> list[str]:
 def resolve_exercise_muscles(exercise_title: str, template_id: str = None, api_key: str = None) -> list[str]:
     """
     Resolves an exercise to its target muscle groups directly from Hevy:
-    1. Checks if template_id is in local cache (0 API calls).
-    2. If missing from cache and api_key is available, queries Hevy API and updates cache.
-    3. If neither is available, matches against titles in cache.
+    - Checks if template_id is in local cache (zero external API calls).
+    - If missing from cache and api_key is available, queries Hevy API and updates cache.
+    - If neither is available, matches against titles in cache as fallback.
     """
     global _CACHED_TEMPLATES
 
-    # 1. Check local cache by template_id
+    # Check local cache by template_id
     if template_id and template_id in _CACHED_TEMPLATES:
         cached_muscles = _CACHED_TEMPLATES[template_id].get("muscles")
         if cached_muscles:
             return cached_muscles
 
-    # 2. On-demand pull from Hevy API for new/unknown exercises
+    # On-demand pull from Hevy API for new or unknown exercises
     if template_id and api_key:
         fetched_muscles = fetch_template_from_hevy(template_id, api_key)
         if fetched_muscles:
@@ -132,7 +132,7 @@ def resolve_exercise_muscles(exercise_title: str, template_id: str = None, api_k
             save_templates_cache(_CACHED_TEMPLATES)
             return fetched_muscles
 
-    # 3. Match against cached titles as a fallback
+    # Match against cached titles as a fallback
     title_lower = (exercise_title or "").lower().strip()
     for cached_id, t_info in _CACHED_TEMPLATES.items():
         if t_info.get("title", "").lower().strip() == title_lower:
