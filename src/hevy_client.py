@@ -68,10 +68,34 @@ def save_templates_cache(cache: dict):
 # In-memory template cache
 _CACHED_TEMPLATES = load_templates_cache()
 
-def fetch_template_from_hevy(template_id: str, api_key: str) -> list[str]:
+def extract_muscle_weights(entry: dict) -> dict[str, float]:
+    """
+    Extracts weighted muscle mapping from a template entry:
+    Primary muscle = 1.0 set credit
+    Secondary muscles = 0.5 set credit
+    """
+    weights = {}
+    primary = entry.get("primary")
+    secondaries = entry.get("secondary", [])
+
+    if not primary and entry.get("muscles"):
+        muscles = entry.get("muscles")
+        primary = muscles[0] if muscles else None
+        secondaries = muscles[1:] if len(muscles) > 1 else []
+
+    if primary:
+        weights[primary] = 1.0
+
+    for sec in secondaries:
+        if sec and sec not in weights:
+            weights[sec] = 0.5
+
+    return weights
+
+def fetch_template_from_hevy(template_id: str, api_key: str) -> dict:
     """Fetches a single exercise template from Hevy API by its ID."""
     if not template_id or not api_key:
-        return []
+        return {}
 
     url = f"{HEVY_API_BASE}/exercise_templates/{template_id}"
     headers = {
@@ -86,59 +110,56 @@ def fetch_template_from_hevy(template_id: str, api_key: str) -> list[str]:
             data = json.loads(resp.read().decode("utf-8"))
             template = data.get("exercise_template", data)
 
-            muscles = []
             primary = normalize_hevy_muscle(template.get("primary_muscle_group"))
-            if primary:
-                muscles.append(primary)
-
+            secondaries = []
             for sec in template.get("secondary_muscle_groups", []):
                 norm = normalize_hevy_muscle(sec)
-                if norm and norm not in muscles:
-                    muscles.append(norm)
+                if norm and norm != primary and norm not in secondaries:
+                    secondaries.append(norm)
 
             title = template.get("title", "")
-            print(f"[Hevy API] Synced template: '{title}' ({template_id}) -> {muscles}")
-            return muscles
+            muscles_combined = ([primary] if primary else []) + secondaries
+            print(f"[Hevy API] Synced template: '{title}' ({template_id}) -> primary: {primary}, secondary: {secondaries}")
+            return {
+                "title": title,
+                "primary": primary,
+                "secondary": secondaries,
+                "muscles": muscles_combined
+            }
     except urllib.error.HTTPError as e:
         print(f"[Warning] Could not fetch Hevy template {template_id} (HTTP {e.code})")
     except Exception as e:
         print(f"[Warning] Error fetching template {template_id}: {e}")
 
-    return []
+    return {}
 
-def resolve_exercise_muscles(exercise_title: str, template_id: str = None, api_key: str = None) -> list[str]:
+def resolve_exercise_muscles(exercise_title: str, template_id: str = None, api_key: str = None) -> dict[str, float]:
     """
-    Resolves an exercise to its target muscle groups directly from Hevy:
-    - Checks if template_id is in local cache (zero external API calls).
-    - If missing from cache and api_key is available, queries Hevy API and updates cache.
-    - If neither is available, matches against titles in cache as fallback.
+    Resolves an exercise to its targeted muscle groups with weights:
+    Primary muscle = 1.0 set credit
+    Secondary muscles = 0.5 set credit
     """
     global _CACHED_TEMPLATES
 
     # Check local cache by template_id
     if template_id and template_id in _CACHED_TEMPLATES:
-        cached_muscles = _CACHED_TEMPLATES[template_id].get("muscles")
-        if cached_muscles:
-            return cached_muscles
+        return extract_muscle_weights(_CACHED_TEMPLATES[template_id])
 
     # On-demand pull from Hevy API for new or unknown exercises
     if template_id and api_key:
-        fetched_muscles = fetch_template_from_hevy(template_id, api_key)
-        if fetched_muscles:
-            _CACHED_TEMPLATES[template_id] = {
-                "title": exercise_title,
-                "muscles": fetched_muscles
-            }
+        template_data = fetch_template_from_hevy(template_id, api_key)
+        if template_data:
+            _CACHED_TEMPLATES[template_id] = template_data
             save_templates_cache(_CACHED_TEMPLATES)
-            return fetched_muscles
+            return extract_muscle_weights(template_data)
 
     # Match against cached titles as a fallback
     title_lower = (exercise_title or "").lower().strip()
     for cached_id, t_info in _CACHED_TEMPLATES.items():
         if t_info.get("title", "").lower().strip() == title_lower:
-            return t_info.get("muscles", [])
+            return extract_muscle_weights(t_info)
 
-    return []
+    return {}
 
 def get_workouts(api_key: str = None, page_count: int = 5) -> list[dict]:
     """

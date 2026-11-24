@@ -35,15 +35,15 @@ class TestHevyClientAndTemplates(unittest.TestCase):
         self.assertEqual(cache["mock-wall-sit"]["muscles"], ["Quads"])
 
     def test_resolve_exercise_muscles_from_cache(self):
-        """Verifies that templates in cache resolve directly without API calls."""
-        self.assertEqual(resolve_exercise_muscles("Wall Sit", template_id="mock-wall-sit"), ["Quads"])
-        self.assertEqual(resolve_exercise_muscles("Barbell Squat", template_id="mock-squat"), ["Quads", "Glutes"])
-        self.assertEqual(resolve_exercise_muscles("Flat Bench Press", template_id="mock-bench"), ["Chest", "Triceps"])
+        """Verifies that templates in cache resolve directly with primary (1.0) and secondary (0.5) weights."""
+        self.assertEqual(resolve_exercise_muscles("Wall Sit", template_id="mock-wall-sit"), {"Quads": 1.0})
+        self.assertEqual(resolve_exercise_muscles("Barbell Squat", template_id="mock-squat"), {"Quads": 1.0, "Glutes": 0.5})
+        self.assertEqual(resolve_exercise_muscles("Flat Bench Press", template_id="mock-bench"), {"Chest": 1.0, "Triceps": 0.5})
 
     def test_resolve_exercise_muscles_by_title_fallback(self):
         """When template_id is missing, falls back to matching known titles in cache."""
-        self.assertEqual(resolve_exercise_muscles("Wall Sit", template_id=None), ["Quads"])
-        self.assertEqual(resolve_exercise_muscles("Nonexistent Exercise", template_id=None), [])
+        self.assertEqual(resolve_exercise_muscles("Wall Sit", template_id=None), {"Quads": 1.0})
+        self.assertEqual(resolve_exercise_muscles("Nonexistent Exercise", template_id=None), {})
 
     def test_mock_workouts_structure(self):
         workouts = generate_mock_workouts()
