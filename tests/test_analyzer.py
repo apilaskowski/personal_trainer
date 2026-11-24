@@ -115,10 +115,10 @@ class TestAnalyzer(unittest.TestCase):
             "Hamstrings": 10
         }
         workouts = [
-            # 55 hours ago: did 6 sets of Lats and 2 sets of Hamstrings
+            # 75 hours ago: did 6 sets of Lats and 2 sets of Hamstrings (both ready: Lats 48h, Hamstrings 72h)
             {
                 "id": "w1",
-                "start_time": (self.now - timedelta(hours=55)).isoformat(),
+                "start_time": (self.now - timedelta(hours=75)).isoformat(),
                 "exercises": [
                     {
                         "exercise_template_id": "mock-pulldown",
