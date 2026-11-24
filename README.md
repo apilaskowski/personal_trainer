@@ -75,15 +75,33 @@ flowchart TD
 
 ## 🗺️ Phased Implementation Roadmap
 
-To ensure high code quality and clear review checkpoints, development is broken down into 5 focused steps:
+Development was broken down into 5 focused steps:
 
-- [x] **Step 1: Architecture & Design Specification** *(This PR)*  
+- [x] **Step 1: Architecture & Design Specification** (#2)  
   Document system architecture, recovery math, data models, and UI wireframes.
-- [ ] **Step 2: Hevy API Client & Exercise Mapping**  
+- [x] **Step 2: Hevy API Client & Exercise Mapping** (#3)  
   Implement `src/hevy_client.py` with pagination, error handling, muscle taxonomy, and offline mock support.
-- [ ] **Step 3: Recovery & Recommendation Engine**  
+- [x] **Step 3: Recovery & Recommendation Engine** (#4)  
   Implement `src/analyzer.py` with unit tests for 48h recovery calculations and rolling set volume.
-- [ ] **Step 4: Mobile-First Light Theme Web App**  
+- [x] **Step 4: Mobile-First Light Theme Web App** (#5)  
   Build `public/index.html`, `style.css`, and `app.js` with responsive layout and PWA support.
-- [ ] **Step 5: GitHub Actions Daily Sync & GitHub Pages Deployment**  
+- [x] **Step 5: GitHub Actions Daily Sync & GitHub Pages Deployment** (#6)  
   Configure `.github/workflows/sync-and-deploy.yml` with scheduled cron and automatic deployment.
+
+---
+
+## 🌐 Live Web App & Mobile Access
+
+Once merged to `main`, GitHub Actions automatically compiles and publishes the dashboard to GitHub Pages:
+
+👉 **`https://apilaskowski.github.io/personal_trainer/`**
+
+### One-Time Setup on GitHub:
+1. Go to repository **Settings** → **Pages**.
+2. Under **Build and deployment** → **Source**, select **Deploy from a branch**.
+3. Select branch: **`gh-pages`** (folder: `/root`), then click **Save**.
+*(The `gh-pages` branch is created automatically on the first workflow run).*
+
+### Add to Mobile Home Screen:
+* **iPhone (Safari)**: Open the URL → tap the Share button (square with arrow) → tap **"Add to Home Screen"**.
+* **Android (Chrome)**: Open the URL → tap the `⋮` menu → tap **"Install App"** or **"Add to Home screen"**.
