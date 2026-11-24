@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#ffffff">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <title>Personal Trainer — Smart Workout Guidance</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="app-container">
+    
+    <!-- Top Header -->
+    <header class="header">
+      <div class="brand">
+        <span class="brand-icon">⚡</span>
+        <div>
+          <h1 class="brand-title">Personal Trainer</h1>
+          <p class="brand-subtitle" id="last-updated">Updating...</p>
+        </div>
+      </div>
+      <span class="badge-sync">Hevy Synced</span>
+    </header>
+
+    <!-- Hero Card: Today's Focus -->
+    <section class="card hero-card">
+      <div class="hero-header">
+        <span class="hero-eyebrow">TODAY'S TRAINING RECOMMENDATION</span>
+        <span class="status-indicator-live"></span>
+      </div>
+      <h2 class="hero-headline" id="hero-headline">Loading recommendations...</h2>
+      <p class="hero-summary" id="hero-summary">Analyzing your recent Hevy logs and muscle recovery windows...</p>
+      
+      <div class="recommended-tags" id="recommended-tags">
+        <!-- Rendered dynamically via app.js -->
+      </div>
+    </section>
+
+    <!-- Controls: 7-Day vs 14-Day View -->
+    <section class="controls-section">
+      <h3 class="section-title">Muscle Readiness & Goals</h3>
+      <div class="toggle-group">
+        <button class="toggle-btn active" id="btn-7d">7-Day Rolling</button>
+        <button class="toggle-btn" id="btn-14d">14-Day View</button>
+      </div>
+    </section>
+
+    <!-- Muscle Grid -->
+    <section class="muscle-grid" id="muscle-grid">
+      <!-- Rendered dynamically via app.js -->
+    </section>
+
+    <!-- Recent Workouts -->
+    <section class="card workouts-card">
+      <h3 class="section-title" style="margin-bottom: 12px;">Recent Sessions</h3>
+      <div class="workout-list" id="workout-list">
+        <!-- Rendered dynamically via app.js -->
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <p>Read-Only Dashboard • Auto-synced from Hevy</p>
+    </footer>
+
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
