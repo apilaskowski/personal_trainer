@@ -1,6 +1,7 @@
 """
 Hevy REST API Client for Personal Trainer.
-Handles fetching workouts, pagination, authentication, and offline mock generation.
+Handles fetching workouts, on-demand template synchronization,
+and muscle group normalization directly from Hevy's official database.
 """
 
 import os
@@ -10,17 +11,144 @@ import urllib.error
 from datetime import datetime, timedelta, timezone
 
 HEVY_API_BASE = "https://api.hevyapp.com/v1"
+_CACHE_FILE = os.path.join(os.path.dirname(__file__), "hevy_templates_cache.json")
+
+# Normalizes Hevy's official API muscle group strings into our 10 standard groups
+HEVY_MUSCLE_NORMALIZATION = {
+    "quadriceps": "Quads",
+    "quads": "Quads",
+    "hamstrings": "Hamstrings",
+    "glutes": "Glutes",
+    "calves": "Calves",
+    "chest": "Chest",
+    "lats": "Back",
+    "upper_back": "Back",
+    "lower_back": "Back",
+    "traps": "Back",
+    "trapezius": "Back",
+    "shoulders": "Shoulders",
+    "deltoids": "Shoulders",
+    "biceps": "Biceps",
+    "triceps": "Triceps",
+    "forearms": "Biceps",
+    "abdominals": "Abs",
+    "abs": "Abs",
+    "core": "Abs",
+    "obliques": "Abs"
+}
+
+def normalize_hevy_muscle(muscle_name: str) -> str:
+    """Normalizes a raw muscle string from Hevy to a standard group name."""
+    if not muscle_name:
+        return None
+    key = muscle_name.lower().replace(" ", "_").strip()
+    return HEVY_MUSCLE_NORMALIZATION.get(key)
+
+def load_templates_cache() -> dict:
+    """Loads the cached exercise templates from disk."""
+    if os.path.exists(_CACHE_FILE):
+        try:
+            with open(_CACHE_FILE, "r", encoding="utf-8") as f:
+                data = json.load(f)
+                return {k: v for k, v in data.items() if not k.startswith("_")}
+        except Exception as e:
+            print(f"[Warning] Could not load templates cache: {e}")
+    return {}
+
+def save_templates_cache(cache: dict):
+    """Persists updated templates cache to disk."""
+    try:
+        data = {"_comment": "Cached Hevy exercise templates. Auto-updated on-demand."}
+        data.update(cache)
+        with open(_CACHE_FILE, "w", encoding="utf-8") as f:
+            json.dump(data, f, indent=2)
+    except Exception as e:
+        print(f"[Warning] Could not save templates cache: {e}")
+
+# In-memory template cache
+_CACHED_TEMPLATES = load_templates_cache()
+
+def fetch_template_from_hevy(template_id: str, api_key: str) -> list[str]:
+    """Fetches a single exercise template from Hevy API by its ID."""
+    if not template_id or not api_key:
+        return []
+
+    url = f"{HEVY_API_BASE}/exercise_templates/{template_id}"
+    headers = {
+        "api-key": api_key,
+        "Accept": "application/json",
+        "User-Agent": "PersonalTrainer-App"
+    }
+
+    req = urllib.request.Request(url, headers=headers)
+    try:
+        with urllib.request.urlopen(req) as resp:
+            data = json.loads(resp.read().decode("utf-8"))
+            template = data.get("exercise_template", data)
+
+            muscles = []
+            primary = normalize_hevy_muscle(template.get("primary_muscle_group"))
+            if primary:
+                muscles.append(primary)
+
+            for sec in template.get("secondary_muscle_groups", []):
+                norm = normalize_hevy_muscle(sec)
+                if norm and norm not in muscles:
+                    muscles.append(norm)
+
+            title = template.get("title", "")
+            print(f"[Hevy API] Synced template: '{title}' ({template_id}) -> {muscles}")
+            return muscles
+    except urllib.error.HTTPError as e:
+        print(f"[Warning] Could not fetch Hevy template {template_id} (HTTP {e.code})")
+    except Exception as e:
+        print(f"[Warning] Error fetching template {template_id}: {e}")
+
+    return []
+
+def resolve_exercise_muscles(exercise_title: str, template_id: str = None, api_key: str = None) -> list[str]:
+    """
+    Resolves an exercise to its target muscle groups directly from Hevy:
+    - Checks if template_id is in local cache (zero external API calls).
+    - If missing from cache and api_key is available, queries Hevy API and updates cache.
+    - If neither is available, matches against titles in cache as fallback.
+    """
+    global _CACHED_TEMPLATES
+
+    # Check local cache by template_id
+    if template_id and template_id in _CACHED_TEMPLATES:
+        cached_muscles = _CACHED_TEMPLATES[template_id].get("muscles")
+        if cached_muscles:
+            return cached_muscles
+
+    # On-demand pull from Hevy API for new or unknown exercises
+    if template_id and api_key:
+        fetched_muscles = fetch_template_from_hevy(template_id, api_key)
+        if fetched_muscles:
+            _CACHED_TEMPLATES[template_id] = {
+                "title": exercise_title,
+                "muscles": fetched_muscles
+            }
+            save_templates_cache(_CACHED_TEMPLATES)
+            return fetched_muscles
+
+    # Match against cached titles as a fallback
+    title_lower = (exercise_title or "").lower().strip()
+    for cached_id, t_info in _CACHED_TEMPLATES.items():
+        if t_info.get("title", "").lower().strip() == title_lower:
+            return t_info.get("muscles", [])
+
+    return []
 
 def get_workouts(api_key: str = None, page_count: int = 5) -> list[dict]:
     """
     Fetches recent workouts from the Hevy API.
-    If no API key is provided, falls back to mock data for local testing.
+    Strictly requires HEVY_API_KEY.
     """
     api_key = api_key or os.environ.get("HEVY_API_KEY")
 
     if not api_key:
-        print("[Notice] No HEVY_API_KEY provided. Using mock training data for local demonstration.")
-        return generate_mock_workouts()
+        raise ValueError("HEVY_API_KEY is required to fetch workouts from Hevy API.")
 
     headers = {
         "api-key": api_key,
@@ -52,110 +180,3 @@ def get_workouts(api_key: str = None, page_count: int = 5) -> list[dict]:
 
     print(f"Successfully fetched {len(all_workouts)} workouts from Hevy API.")
     return all_workouts
-
-def generate_mock_workouts() -> list[dict]:
-    """
-    Generates realistic mock workout sessions over the past 14 days.
-    
-    Used for:
-    1. Local offline development & unit testing without needing a live API key.
-    2. Fallback demonstration data if the app runs before HEVY_API_KEY is configured.
-    """
-    now = datetime.now(timezone.utc)
-    return [
-        {
-            "id": "mock_w1",
-            "title": "Full Body A (Chest, Back, Quads)",
-            "start_time": (now - timedelta(hours=52)).isoformat(),
-            "end_time": (now - timedelta(hours=51)).isoformat(),
-            "exercises": [
-                {
-                    "title": "Barbell Squat",
-                    "sets": [
-                        {"set_type": "normal", "weight_kg": 100, "reps": 8},
-                        {"set_type": "normal", "weight_kg": 100, "reps": 8},
-                        {"set_type": "normal", "weight_kg": 105, "reps": 6}
-                    ]
-                },
-                {
-                    "title": "Flat Bench Press",
-                    "sets": [
-                        {"set_type": "normal", "weight_kg": 85, "reps": 8},
-                        {"set_type": "normal", "weight_kg": 85, "reps": 8},
-                        {"set_type": "normal", "weight_kg": 90, "reps": 6}
-                    ]
-                },
-                {
-                    "title": "Lat Pulldown",
-                    "sets": [
-                        {"set_type": "normal", "weight_kg": 70, "reps": 10},
-                        {"set_type": "normal", "weight_kg": 70, "reps": 10},
-                        {"set_type": "normal", "weight_kg": 75, "reps": 8}
-                    ]
-                }
-            ]
-        },
-        {
-            "id": "mock_w2",
-            "title": "Full Body B (Upper Focus - Skipped Legs)",
-            "start_time": (now - timedelta(hours=22)).isoformat(),
-            "end_time": (now - timedelta(hours=21)).isoformat(),
-            "exercises": [
-                {
-                    "title": "Overhead Press",
-                    "sets": [
-                        {"set_type": "normal", "weight_kg": 50, "reps": 8},
-                        {"set_type": "normal", "weight_kg": 50, "reps": 8},
-                        {"set_type": "normal", "weight_kg": 52.5, "reps": 6}
-                    ]
-                },
-                {
-                    "title": "Dumbbell Bicep Curl",
-                    "sets": [
-                        {"set_type": "normal", "weight_kg": 16, "reps": 10},
-                        {"set_type": "normal", "weight_kg": 16, "reps": 10},
-                        {"set_type": "normal", "weight_kg": 16, "reps": 9}
-                    ]
-                },
-                {
-                    "title": "Tricep Pushdown",
-                    "sets": [
-                        {"set_type": "normal", "weight_kg": 25, "reps": 12},
-                        {"set_type": "normal", "weight_kg": 25, "reps": 12},
-                        {"set_type": "normal", "weight_kg": 30, "reps": 10}
-                    ]
-                }
-            ]
-        },
-        {
-            "id": "mock_w3",
-            "title": "Upper Body & Core",
-            "start_time": (now - timedelta(days=5)).isoformat(),
-            "end_time": (now - timedelta(days=5, hours=-1)).isoformat(),
-            "exercises": [
-                {
-                    "title": "Incline Dumbbell Bench Press",
-                    "sets": [
-                        {"set_type": "normal", "weight_kg": 30, "reps": 10},
-                        {"set_type": "normal", "weight_kg": 30, "reps": 9},
-                        {"set_type": "normal", "weight_kg": 30, "reps": 8}
-                    ]
-                },
-                {
-                    "title": "Seated Cable Row",
-                    "sets": [
-                        {"set_type": "normal", "weight_kg": 65, "reps": 10},
-                        {"set_type": "normal", "weight_kg": 65, "reps": 10},
-                        {"set_type": "normal", "weight_kg": 70, "reps": 8}
-                    ]
-                },
-                {
-                    "title": "Hanging Leg Raise",
-                    "sets": [
-                        {"set_type": "normal", "weight_kg": 0, "reps": 15},
-                        {"set_type": "normal", "weight_kg": 0, "reps": 12}
-                    ]
-                }
-            ]
-        }
-    ]

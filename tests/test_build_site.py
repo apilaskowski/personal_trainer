@@ -1,13 +1,18 @@
 """Unit tests for the site build pipeline and data.json generation."""
 
 import unittest
+from unittest.mock import patch
 import os
 import json
 from src.build_site import build
+from tests.mock_data import generate_mock_workouts
 
 class TestBuildSite(unittest.TestCase):
-    def test_build_generates_valid_json(self):
+    @patch("src.build_site.get_workouts")
+    def test_build_generates_valid_json(self, mock_get_workouts):
         """Verifies that build() outputs a valid public/data.json file with required schema."""
+        mock_get_workouts.return_value = generate_mock_workouts()
+
         output_path = build()
         self.assertTrue(os.path.exists(output_path))
 

@@ -37,6 +37,15 @@ jobs:
         run: |
           python src/build_site.py
 
+      - name: Cache newly discovered Hevy templates
+        if: github.ref == 'refs/heads/main'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add src/hevy_templates_cache.json
+          git commit -m "chore: auto-update Hevy exercise template cache [skip ci]" || echo "No new templates discovered"
+          git push origin main || echo "No new template changes to push"
+
       - name: Deploy to GitHub Pages
         if: github.ref == 'refs/heads/main'
         uses: peaceiris/actions-gh-pages@v4

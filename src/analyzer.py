@@ -1,13 +1,14 @@
 """
 Workout Analysis and Recommendation Engine for Personal Trainer.
 Computes:
-1. 48-Hour Independent Muscle Recovery States.
-2. Rolling 7-day and 14-day working set volumes vs. weekly targets.
-3. Prioritized 'What to Train Today' focus recommendations.
+- 48-Hour Independent Muscle Recovery States.
+- Rolling 7-day and 14-day working set volumes vs. weekly targets.
+- Prioritized 'What to Train Today' focus recommendations.
 """
 
 from datetime import datetime, timezone
-from src.config import DEFAULT_WEEKLY_GOALS, RECOVERY_THRESHOLD_HOURS, map_exercise_to_muscles
+from src.config import DEFAULT_WEEKLY_GOALS, RECOVERY_THRESHOLD_HOURS
+from src.hevy_client import resolve_exercise_muscles
 
 def parse_iso(dt_str: str) -> datetime:
     """Parses an ISO format date string into a timezone-aware UTC datetime."""
@@ -16,10 +17,10 @@ def parse_iso(dt_str: str) -> datetime:
     # Python 3.11+ standard library natively supports 'Z' and offset formats
     return datetime.fromisoformat(dt_str)
 
-def analyze_workouts(workouts: list[dict], weekly_goals: dict = None, current_time: datetime = None) -> dict:
+def analyze_workouts(workouts: list[dict], weekly_goals: dict = None, current_time: datetime = None, api_key: str = None) -> dict:
     """
     Analyzes workout logs to determine recovery states, volume deficits, and recommendations.
-    Accepts an optional current_time for deterministic testing.
+    Accepts an optional current_time for deterministic testing, and api_key for on-demand template resolution.
     """
     weekly_goals = weekly_goals or DEFAULT_WEEKLY_GOALS
     now = current_time or datetime.now(timezone.utc)
@@ -52,7 +53,10 @@ def analyze_workouts(workouts: list[dict], weekly_goals: dict = None, current_ti
 
         for ex in w.get("exercises", []):
             title = ex.get("title", "")
-            muscles = map_exercise_to_muscles(title)
+            template_id = ex.get("exercise_template_id")
+            # Resolves via on-demand Hevy cache, fallback map, or heuristics
+            muscles = resolve_exercise_muscles(title, template_id=template_id, api_key=api_key)
+
             # Count working sets (exclude warmups)
             working_sets = sum(
                 1 for s in ex.get("sets", [])
