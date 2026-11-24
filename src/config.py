@@ -17,4 +17,19 @@ DEFAULT_WEEKLY_GOALS = {
     "Abs": 6
 }
 
-RECOVERY_THRESHOLD_HOURS = 48.0
+DEFAULT_RECOVERY_HOURS = 48.0
+RECOVERY_THRESHOLD_HOURS = 48.0  # Alias for backward compatibility
+
+# Default recovery threshold hours per muscle group
+DEFAULT_RECOVERY_THRESHOLDS = {
+    "Chest": 48.0,
+    "Back": 48.0,
+    "Quads": 48.0,
+    "Hamstrings": 48.0,
+    "Glutes": 48.0,
+    "Shoulders": 48.0,
+    "Biceps": 48.0,
+    "Triceps": 48.0,
+    "Calves": 48.0,
+    "Abs": 48.0
+}

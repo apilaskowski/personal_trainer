@@ -171,6 +171,41 @@ class TestAnalyzer(unittest.TestCase):
         self.assertEqual(muscles["Triceps"]["deficit_7d"], 8.5)
         self.assertEqual(muscles["Triceps"]["recovery_status"], "resting")
 
+    def test_per_muscle_recovery_thresholds(self):
+        """Muscles with different recovery thresholds recover at different rates."""
+        workouts = [
+            {
+                "id": "w1",
+                "start_time": (self.now - timedelta(hours=30)).isoformat(),
+                "exercises": [
+                    {
+                        "exercise_template_id": "mock-squat",
+                        "title": "Barbell Squat",
+                        "sets": [{"set_type": "normal", "weight_kg": 100, "reps": 8}]
+                    },
+                    {
+                        "exercise_template_id": "mock-bench",
+                        "title": "Flat Bench Press",
+                        "sets": [{"set_type": "normal", "weight_kg": 80, "reps": 10}]
+                    }
+                ]
+            }
+        ]
+        goals = {"Quads": 10, "Chest": 10}
+        # Quads requires 72h, Chest requires 24h
+        thresholds = {"Quads": 72.0, "Chest": 24.0}
+        res = analyze_workouts(workouts, weekly_goals=goals, recovery_thresholds=thresholds, current_time=self.now)
+        muscles = {m["name"]: m for m in res["muscles"]}
+
+        # 30 hours passed:
+        # Chest (24h threshold): 30h >= 24h -> ready (100%)
+        self.assertEqual(muscles["Chest"]["recovery_status"], "ready")
+        self.assertEqual(muscles["Chest"]["recovery_percent"], 100)
+
+        # Quads (72h threshold): 30h < 72h, but >= 36h? 30h < 36h -> resting
+        self.assertEqual(muscles["Quads"]["recovery_status"], "resting")
+        self.assertLess(muscles["Quads"]["recovery_percent"], 50)
+
     def test_json_serializability(self):
         """Verify the output can be directly serialized to JSON with no datetime errors."""
         res = analyze_workouts([], weekly_goals=self.goals, current_time=self.now)
