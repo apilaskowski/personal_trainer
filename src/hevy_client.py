@@ -13,7 +13,7 @@ from datetime import datetime, timedelta, timezone
 HEVY_API_BASE = "https://api.hevyapp.com/v1"
 _CACHE_FILE = os.path.join(os.path.dirname(__file__), "hevy_templates_cache.json")
 
-# Normalizes Hevy's official API muscle group strings into our 10 standard groups
+# Normalizes Hevy's official API muscle group strings into our standard groups
 HEVY_MUSCLE_NORMALIZATION = {
     "quadriceps": "Quads",
     "quads": "Quads",
@@ -21,20 +21,28 @@ HEVY_MUSCLE_NORMALIZATION = {
     "glutes": "Glutes",
     "calves": "Calves",
     "chest": "Chest",
-    "lats": "Back",
-    "upper_back": "Back",
-    "lower_back": "Back",
-    "traps": "Back",
-    "trapezius": "Back",
+    "lats": "Lats",
+    "upper_back": "Upper / Mid Back",
+    "lower_back": "Upper / Mid Back",
+    "traps": "Upper / Mid Back",
+    "trapezius": "Upper / Mid Back",
     "shoulders": "Shoulders",
     "deltoids": "Shoulders",
     "biceps": "Biceps",
     "triceps": "Triceps",
     "forearms": "Biceps",
-    "abdominals": "Abs",
-    "abs": "Abs",
-    "core": "Abs",
-    "obliques": "Abs"
+    "adductors": "Hip Adductors",
+    "abductors": "Hip Abductors",
+    "abdominals": "Abs / Core",
+    "abs": "Abs / Core",
+    "core": "Abs / Core",
+    "obliques": "Abs / Core"
+}
+
+# Maps legacy cached muscle names to current taxonomy for full backward compatibility
+LEGACY_MUSCLE_MAP = {
+    "Back": "Upper / Mid Back",
+    "Abs": "Abs / Core"
 }
 
 def normalize_hevy_muscle(muscle_name: str) -> str:
@@ -83,10 +91,12 @@ def extract_muscle_weights(entry: dict) -> dict[str, float]:
         primary = muscles[0] if muscles else None
         secondaries = muscles[1:] if len(muscles) > 1 else []
 
+    primary = LEGACY_MUSCLE_MAP.get(primary, primary)
     if primary:
         weights[primary] = 1.0
 
     for sec in secondaries:
+        sec = LEGACY_MUSCLE_MAP.get(sec, sec)
         if sec and sec not in weights:
             weights[sec] = 0.5
 

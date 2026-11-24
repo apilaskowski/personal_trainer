@@ -5,6 +5,7 @@ from unittest.mock import patch
 import os
 import json
 from src.build_site import build
+from src.config import DEFAULT_WEEKLY_GOALS
 from tests.mock_data import generate_mock_workouts
 
 class TestBuildSite(unittest.TestCase):
@@ -32,8 +33,8 @@ class TestBuildSite(unittest.TestCase):
         self.assertIn("summary", rec)
         self.assertIsInstance(rec["focus_muscles"], list)
 
-        # Validate muscles list (10 muscle groups)
-        self.assertEqual(len(data["muscles"]), 10)
+        # Validate muscles list
+        self.assertEqual(len(data["muscles"]), len(DEFAULT_WEEKLY_GOALS))
         for m in data["muscles"]:
             self.assertIn("name", m)
             self.assertIn("recovery_status", m)

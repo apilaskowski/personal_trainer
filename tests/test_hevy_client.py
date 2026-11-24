@@ -11,19 +11,22 @@ from tests.mock_data import generate_mock_workouts
 class TestConfig(unittest.TestCase):
     def test_weekly_goals_exist(self):
         self.assertIn("Chest", DEFAULT_WEEKLY_GOALS)
-        self.assertIn("Back", DEFAULT_WEEKLY_GOALS)
+        self.assertIn("Lats", DEFAULT_WEEKLY_GOALS)
+        self.assertIn("Upper / Mid Back", DEFAULT_WEEKLY_GOALS)
         self.assertIn("Quads", DEFAULT_WEEKLY_GOALS)
         self.assertIn("Hamstrings", DEFAULT_WEEKLY_GOALS)
         self.assertEqual(RECOVERY_THRESHOLD_HOURS, 48.0)
 
 class TestHevyClientAndTemplates(unittest.TestCase):
     def test_normalize_hevy_muscle(self):
-        """Verifies Hevy raw API muscle strings normalize to our 10 standard groups."""
+        """Verifies Hevy raw API muscle strings normalize to our standard groups."""
         self.assertEqual(normalize_hevy_muscle("quadriceps"), "Quads")
         self.assertEqual(normalize_hevy_muscle("quads"), "Quads")
-        self.assertEqual(normalize_hevy_muscle("lats"), "Back")
-        self.assertEqual(normalize_hevy_muscle("upper_back"), "Back")
-        self.assertEqual(normalize_hevy_muscle("abdominals"), "Abs")
+        self.assertEqual(normalize_hevy_muscle("lats"), "Lats")
+        self.assertEqual(normalize_hevy_muscle("upper_back"), "Upper / Mid Back")
+        self.assertEqual(normalize_hevy_muscle("adductors"), "Hip Adductors")
+        self.assertEqual(normalize_hevy_muscle("abductors"), "Hip Abductors")
+        self.assertEqual(normalize_hevy_muscle("abdominals"), "Abs / Core")
         self.assertEqual(normalize_hevy_muscle("shoulders"), "Shoulders")
         self.assertIsNone(normalize_hevy_muscle("unknown_muscle"))
 

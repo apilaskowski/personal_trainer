@@ -10,7 +10,8 @@ class TestAnalyzer(unittest.TestCase):
         self.now = datetime(2026, 11, 24, 12, 0, 0, tzinfo=timezone.utc)
         self.goals = {
             "Chest": 10,
-            "Back": 12,
+            "Lats": 12,
+            "Upper / Mid Back": 12,
             "Quads": 10,
             "Hamstrings": 10,
             "Shoulders": 10
@@ -77,8 +78,8 @@ class TestAnalyzer(unittest.TestCase):
         res = analyze_workouts(workouts, weekly_goals=self.goals, current_time=self.now)
         muscles = {m["name"]: m for m in res["muscles"]}
 
-        self.assertEqual(muscles["Back"]["recovery_status"], "recovering")
-        self.assertNotIn("Back", res["today_recommendation"]["focus_muscles"])
+        self.assertEqual(muscles["Lats"]["recovery_status"], "recovering")
+        self.assertNotIn("Lats", res["today_recommendation"]["focus_muscles"])
 
     def test_independent_muscle_recovery(self):
         """Hitting Quads while skipping Hamstrings leaves Hamstrings ready."""
@@ -110,18 +111,18 @@ class TestAnalyzer(unittest.TestCase):
     def test_priority_ranking_by_deficit(self):
         """Ready muscles with the largest deficit should be prioritized first."""
         custom_goals = {
-            "Back": 12,
+            "Lats": 12,
             "Hamstrings": 10
         }
         workouts = [
-            # 55 hours ago: did 6 sets of Back and 2 sets of Hamstrings
+            # 55 hours ago: did 6 sets of Lats and 2 sets of Hamstrings
             {
                 "id": "w1",
                 "start_time": (self.now - timedelta(hours=55)).isoformat(),
                 "exercises": [
                     {
-                        "exercise_template_id": "mock-cable-row",
-                        "title": "Seated Cable Row",
+                        "exercise_template_id": "mock-pulldown",
+                        "title": "Lat Pulldown",
                         "sets": [{"set_type": "normal"} for _ in range(6)]
                     },
                     {
@@ -136,12 +137,12 @@ class TestAnalyzer(unittest.TestCase):
         res = analyze_workouts(workouts, weekly_goals=custom_goals, current_time=self.now)
         rec = res["today_recommendation"]["focus_muscles"]
 
-        # Back deficit: 12 - 6 = 6. Hamstrings deficit: 10 - 2 = 8.
-        # Both are ready (55h ago). Hamstrings has higher deficit (8 vs 6), so it ranks before Back!
+        # Lats deficit: 12 - 6 = 6. Hamstrings deficit: 10 - 2 = 8.
+        # Both are ready (55h ago). Hamstrings has higher deficit (8 vs 6), so it ranks before Lats!
         self.assertIn("Hamstrings", rec)
-        self.assertIn("Back", rec)
+        self.assertIn("Lats", rec)
         self.assertEqual(rec[0], "Hamstrings")
-        self.assertEqual(rec[1], "Back")
+        self.assertEqual(rec[1], "Lats")
 
     def test_secondary_muscle_half_set_weighting(self):
         """Primary muscle gets 1.0 set credit, secondary muscle gets 0.5 set credit."""
