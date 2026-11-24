@@ -1,5 +1,5 @@
 import unittest
-from src.config import DEFAULT_WEEKLY_GOALS, RECOVERY_THRESHOLD_HOURS
+from src.config import DEFAULT_WEEKLY_GOALS, DEFAULT_RECOVERY_THRESHOLDS, RECOVERY_THRESHOLD_HOURS
 from src.hevy_client import (
     get_workouts,
     normalize_hevy_muscle,
@@ -15,6 +15,13 @@ class TestConfig(unittest.TestCase):
         self.assertIn("Upper / Mid Back", DEFAULT_WEEKLY_GOALS)
         self.assertIn("Quads", DEFAULT_WEEKLY_GOALS)
         self.assertIn("Hamstrings", DEFAULT_WEEKLY_GOALS)
+        self.assertEqual(DEFAULT_WEEKLY_GOALS["Quads"], 8)
+        self.assertEqual(DEFAULT_WEEKLY_GOALS["Biceps"], 12)
+        self.assertEqual(DEFAULT_WEEKLY_GOALS["Chest"], 16)
+        self.assertEqual(DEFAULT_RECOVERY_THRESHOLDS["Quads"], 72.0)
+        self.assertEqual(DEFAULT_RECOVERY_THRESHOLDS["Hamstrings"], 72.0)
+        self.assertEqual(DEFAULT_RECOVERY_THRESHOLDS["Biceps"], 36.0)
+        self.assertEqual(DEFAULT_RECOVERY_THRESHOLDS["Abs / Core"], 24.0)
         self.assertEqual(RECOVERY_THRESHOLD_HOURS, 48.0)
 
 class TestHevyClientAndTemplates(unittest.TestCase):
