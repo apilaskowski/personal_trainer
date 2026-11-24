@@ -1032,5 +1032,71 @@
     "muscles": [
       "Biceps"
     ]
+  },
+  "b8a3d0e0-f3e8-4f84-a822-ea81bb218a3b": {
+    "title": "Badminton \ud83c\udff8",
+    "primary": null,
+    "secondary": [],
+    "muscles": []
+  },
+  "14a87a67-642f-431f-9538-e542a54e68fc": {
+    "title": "Hip Adduction (Machine) (RemPlus)",
+    "primary": null,
+    "secondary": [],
+    "muscles": []
+  },
+  "c1714b32-cdeb-42c4-bf33-8f32f7422893": {
+    "title": "Hip Abduction (Machine) (RemPlus)",
+    "primary": null,
+    "secondary": [],
+    "muscles": []
+  },
+  "AC1BB830": {
+    "title": "Running",
+    "primary": null,
+    "secondary": [],
+    "muscles": []
+  },
+  "9cc42433-9bbf-4537-88be-b050bd9f2ca2": {
+    "title": "Hip Adduction (Machine) (Poznania)",
+    "primary": null,
+    "secondary": [],
+    "muscles": []
+  },
+  "25ea59a6-0423-4ee6-b366-9b0f7792e345": {
+    "title": "Hip Abduction (Machine) (Posnania)",
+    "primary": null,
+    "secondary": [],
+    "muscles": []
+  },
+  "8d4c49d4-4025-4e2c-927d-56823fab2fb0": {
+    "title": "Copenhagen Adduction",
+    "primary": null,
+    "secondary": [],
+    "muscles": []
+  },
+  "5D99A2FA": {
+    "title": "Ski Erg",
+    "primary": null,
+    "secondary": [],
+    "muscles": []
+  },
+  "F8A0FCCA": {
+    "title": "Kettlebell Swing",
+    "primary": null,
+    "secondary": [],
+    "muscles": []
+  },
+  "084A67CA": {
+    "title": "Battle Ropes",
+    "primary": null,
+    "secondary": [],
+    "muscles": []
+  },
+  "F49E31D6": {
+    "title": "Mountain Climber",
+    "primary": null,
+    "secondary": [],
+    "muscles": []
   }
 }
