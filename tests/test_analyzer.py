@@ -36,6 +36,7 @@ class TestAnalyzer(unittest.TestCase):
                 "start_time": (self.now - timedelta(hours=10)).isoformat(),
                 "exercises": [
                     {
+                        "exercise_template_id": "mock-bench",
                         "title": "Flat Bench Press",
                         "sets": [
                             {"set_type": "normal", "weight_kg": 80, "reps": 10},
@@ -49,7 +50,6 @@ class TestAnalyzer(unittest.TestCase):
         res = analyze_workouts(workouts, weekly_goals=self.goals, current_time=self.now)
         muscles = {m["name"]: m for m in res["muscles"]}
 
-        # Bench hits Chest and Triceps (Chest is in our test goals)
         self.assertEqual(muscles["Chest"]["recovery_status"], "resting")
         self.assertEqual(muscles["Chest"]["sets_7d"], 2)
         self.assertEqual(muscles["Chest"]["deficit_7d"], 8)
@@ -63,6 +63,7 @@ class TestAnalyzer(unittest.TestCase):
                 "start_time": (self.now - timedelta(hours=30)).isoformat(),
                 "exercises": [
                     {
+                        "exercise_template_id": "mock-pulldown",
                         "title": "Lat Pulldown",
                         "sets": [
                             {"set_type": "normal", "weight_kg": 70, "reps": 10},
@@ -87,7 +88,8 @@ class TestAnalyzer(unittest.TestCase):
                 "start_time": (self.now - timedelta(hours=12)).isoformat(),
                 "exercises": [
                     {
-                        "title": "Leg Extension",  # Quads only
+                        "exercise_template_id": "mock-leg-extension",
+                        "title": "Leg Extension",
                         "sets": [
                             {"set_type": "normal", "weight_kg": 60, "reps": 12},
                             {"set_type": "normal", "weight_kg": 60, "reps": 12}
@@ -118,10 +120,12 @@ class TestAnalyzer(unittest.TestCase):
                 "start_time": (self.now - timedelta(hours=55)).isoformat(),
                 "exercises": [
                     {
+                        "exercise_template_id": "mock-cable-row",
                         "title": "Seated Cable Row",
                         "sets": [{"set_type": "normal"} for _ in range(6)]
                     },
                     {
+                        "exercise_template_id": "mock-leg-curl",
                         "title": "Lying Leg Curl",
                         "sets": [{"set_type": "normal"} for _ in range(2)]
                     }

@@ -15,5 +15,29 @@
   "mock-pulldown": {
     "title": "Lat Pulldown",
     "muscles": ["Back", "Biceps"]
+  },
+  "mock-leg-extension": {
+    "title": "Leg Extension",
+    "muscles": ["Quads"]
+  },
+  "mock-leg-curl": {
+    "title": "Lying Leg Curl",
+    "muscles": ["Hamstrings"]
+  },
+  "mock-cable-row": {
+    "title": "Seated Cable Row",
+    "muscles": ["Back"]
+  },
+  "mock-ohp": {
+    "title": "Overhead Press",
+    "muscles": ["Shoulders", "Triceps"]
+  },
+  "mock-curl": {
+    "title": "Dumbbell Bicep Curl",
+    "muscles": ["Biceps"]
+  },
+  "mock-pushdown": {
+    "title": "Tricep Pushdown",
+    "muscles": ["Triceps"]
   }
 }
