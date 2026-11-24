@@ -39,12 +39,6 @@ HEVY_MUSCLE_NORMALIZATION = {
     "obliques": "Abs / Core"
 }
 
-# Maps legacy cached muscle names to current taxonomy for full backward compatibility
-LEGACY_MUSCLE_MAP = {
-    "Back": "Upper / Mid Back",
-    "Abs": "Abs / Core"
-}
-
 def normalize_hevy_muscle(muscle_name: str) -> str:
     """Normalizes a raw muscle string from Hevy to a standard group name."""
     if not muscle_name:
@@ -53,7 +47,7 @@ def normalize_hevy_muscle(muscle_name: str) -> str:
     return HEVY_MUSCLE_NORMALIZATION.get(key)
 
 def load_templates_cache() -> dict:
-    """Loads the cached exercise templates from disk."""
+    """Loads the test fixtures / offline templates from disk."""
     if os.path.exists(_CACHE_FILE):
         try:
             with open(_CACHE_FILE, "r", encoding="utf-8") as f:
@@ -63,17 +57,7 @@ def load_templates_cache() -> dict:
             print(f"[Warning] Could not load templates cache: {e}")
     return {}
 
-def save_templates_cache(cache: dict):
-    """Persists updated templates cache to disk."""
-    try:
-        data = {"_comment": "Cached Hevy exercise templates. Auto-updated on-demand."}
-        data.update(cache)
-        with open(_CACHE_FILE, "w", encoding="utf-8") as f:
-            json.dump(data, f, indent=2)
-    except Exception as e:
-        print(f"[Warning] Could not save templates cache: {e}")
-
-# In-memory template cache
+# In-memory template cache for the current run
 _CACHED_TEMPLATES = load_templates_cache()
 
 def extract_muscle_weights(entry: dict) -> dict[str, float]:
@@ -91,12 +75,10 @@ def extract_muscle_weights(entry: dict) -> dict[str, float]:
         primary = muscles[0] if muscles else None
         secondaries = muscles[1:] if len(muscles) > 1 else []
 
-    primary = LEGACY_MUSCLE_MAP.get(primary, primary)
     if primary:
         weights[primary] = 1.0
 
     for sec in secondaries:
-        sec = LEGACY_MUSCLE_MAP.get(sec, sec)
         if sec and sec not in weights:
             weights[sec] = 0.5
 
@@ -151,16 +133,15 @@ def resolve_exercise_muscles(exercise_title: str, template_id: str = None, api_k
     """
     global _CACHED_TEMPLATES
 
-    # Check local cache by template_id
+    # Check in-memory cache by template_id
     if template_id and template_id in _CACHED_TEMPLATES:
         return extract_muscle_weights(_CACHED_TEMPLATES[template_id])
 
-    # On-demand pull from Hevy API for new or unknown exercises
+    # Live pull from Hevy API for exercises
     if template_id and api_key:
         template_data = fetch_template_from_hevy(template_id, api_key)
         if template_data:
             _CACHED_TEMPLATES[template_id] = template_data
-            save_templates_cache(_CACHED_TEMPLATES)
             return extract_muscle_weights(template_data)
 
     # Match against cached titles as a fallback
