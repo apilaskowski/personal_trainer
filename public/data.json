@@ -1,0 +1,187 @@
+{
+  "generated_at": "2026-11-24 00:27 UTC",
+  "today_recommendation": {
+    "focus_muscles": [
+      "Hamstrings",
+      "Back",
+      "Quads",
+      "Calves"
+    ],
+    "headline": "Today's Focus: Hamstrings, Back, Quads, Calves",
+    "summary": "These muscles have had full 48h+ rest and are currently highest priority for your rolling 7-day volume goals."
+  },
+  "muscles": [
+    {
+      "name": "Chest",
+      "weekly_target": 12,
+      "sets_7d": 6,
+      "sets_14d": 6,
+      "last_trained": "2026-11-21T20:27:39.947030+00:00",
+      "hours_since_last": 52.0,
+      "recovery_status": "ready",
+      "recovery_percent": 100,
+      "rest_label": "2.2d ago (52h)",
+      "progress_7d": 50,
+      "deficit_7d": 6
+    },
+    {
+      "name": "Back",
+      "weekly_target": 14,
+      "sets_7d": 6,
+      "sets_14d": 6,
+      "last_trained": "2026-11-21T20:27:39.947030+00:00",
+      "hours_since_last": 52.0,
+      "recovery_status": "ready",
+      "recovery_percent": 100,
+      "rest_label": "2.2d ago (52h)",
+      "progress_7d": 43,
+      "deficit_7d": 8
+    },
+    {
+      "name": "Quads",
+      "weekly_target": 10,
+      "sets_7d": 3,
+      "sets_14d": 3,
+      "last_trained": "2026-11-21T20:27:39.947030+00:00",
+      "hours_since_last": 52.0,
+      "recovery_status": "ready",
+      "recovery_percent": 100,
+      "rest_label": "2.2d ago (52h)",
+      "progress_7d": 30,
+      "deficit_7d": 7
+    },
+    {
+      "name": "Hamstrings",
+      "weekly_target": 10,
+      "sets_7d": 0,
+      "sets_14d": 0,
+      "last_trained": null,
+      "hours_since_last": 999.0,
+      "recovery_status": "ready",
+      "recovery_percent": 100,
+      "rest_label": "Rested (> 7 days)",
+      "progress_7d": 0,
+      "deficit_7d": 10
+    },
+    {
+      "name": "Glutes",
+      "weekly_target": 8,
+      "sets_7d": 3,
+      "sets_14d": 3,
+      "last_trained": "2026-11-21T20:27:39.947030+00:00",
+      "hours_since_last": 52.0,
+      "recovery_status": "ready",
+      "recovery_percent": 100,
+      "rest_label": "2.2d ago (52h)",
+      "progress_7d": 38,
+      "deficit_7d": 5
+    },
+    {
+      "name": "Shoulders",
+      "weekly_target": 12,
+      "sets_7d": 3,
+      "sets_14d": 3,
+      "last_trained": "2026-11-23T02:27:39.947030+00:00",
+      "hours_since_last": 22.0,
+      "recovery_status": "resting",
+      "recovery_percent": 46,
+      "rest_label": "22h ago (Resting)",
+      "progress_7d": 25,
+      "deficit_7d": 9
+    },
+    {
+      "name": "Biceps",
+      "weekly_target": 8,
+      "sets_7d": 6,
+      "sets_14d": 6,
+      "last_trained": "2026-11-23T02:27:39.947030+00:00",
+      "hours_since_last": 22.0,
+      "recovery_status": "resting",
+      "recovery_percent": 46,
+      "rest_label": "22h ago (Resting)",
+      "progress_7d": 75,
+      "deficit_7d": 2
+    },
+    {
+      "name": "Triceps",
+      "weekly_target": 8,
+      "sets_7d": 12,
+      "sets_14d": 12,
+      "last_trained": "2026-11-23T02:27:39.947030+00:00",
+      "hours_since_last": 22.0,
+      "recovery_status": "resting",
+      "recovery_percent": 46,
+      "rest_label": "22h ago (Resting)",
+      "progress_7d": 150,
+      "deficit_7d": 0
+    },
+    {
+      "name": "Calves",
+      "weekly_target": 6,
+      "sets_7d": 0,
+      "sets_14d": 0,
+      "last_trained": null,
+      "hours_since_last": 999.0,
+      "recovery_status": "ready",
+      "recovery_percent": 100,
+      "rest_label": "Rested (> 7 days)",
+      "progress_7d": 0,
+      "deficit_7d": 6
+    },
+    {
+      "name": "Abs",
+      "weekly_target": 6,
+      "sets_7d": 2,
+      "sets_14d": 2,
+      "last_trained": "2026-11-19T00:27:39.947030+00:00",
+      "hours_since_last": 120.0,
+      "recovery_status": "ready",
+      "recovery_percent": 100,
+      "rest_label": "5.0d ago (120h)",
+      "progress_7d": 33,
+      "deficit_7d": 4
+    }
+  ],
+  "recent_workouts": [
+    {
+      "id": "mock_w2",
+      "title": "Full Body B (Upper Focus - Skipped Legs)",
+      "date": "2026-11-23 02:27",
+      "hours_ago": 22.0,
+      "total_sets": 9,
+      "muscles": [
+        "Biceps",
+        "Shoulders",
+        "Triceps"
+      ]
+    },
+    {
+      "id": "mock_w1",
+      "title": "Full Body A (Chest, Back, Quads)",
+      "date": "2026-11-21 20:27",
+      "hours_ago": 52.0,
+      "total_sets": 9,
+      "muscles": [
+        "Back",
+        "Biceps",
+        "Chest",
+        "Glutes",
+        "Quads",
+        "Triceps"
+      ]
+    },
+    {
+      "id": "mock_w3",
+      "title": "Upper Body & Core",
+      "date": "2026-11-19 00:27",
+      "hours_ago": 120.0,
+      "total_sets": 8,
+      "muscles": [
+        "Abs",
+        "Back",
+        "Chest",
+        "Triceps"
+      ]
+    }
+  ]
+}
