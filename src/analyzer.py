@@ -13,9 +13,7 @@ def parse_iso(dt_str: str) -> datetime:
     """Parses an ISO format date string into a timezone-aware UTC datetime."""
     if not dt_str:
         return datetime.now(timezone.utc)
-    # Normalize ISO format with trailing Z
-    if dt_str.endswith("Z"):
-        dt_str = dt_str[:-1] + "+00:00"
+    # Python 3.11+ standard library natively supports 'Z' and offset formats
     return datetime.fromisoformat(dt_str)
 
 def analyze_workouts(workouts: list[dict], weekly_goals: dict = None, current_time: datetime = None) -> dict:
