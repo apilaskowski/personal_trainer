@@ -1,0 +1,19 @@
+{
+  "_comment": "Cached Hevy exercise templates mapping template_id to normalized muscles. Updated on-demand when unknown exercises appear.",
+  "mock-wall-sit": {
+    "title": "Wall Sit",
+    "muscles": ["Quads"]
+  },
+  "mock-squat": {
+    "title": "Barbell Squat",
+    "muscles": ["Quads", "Glutes"]
+  },
+  "mock-bench": {
+    "title": "Flat Bench Press",
+    "muscles": ["Chest", "Triceps"]
+  },
+  "mock-pulldown": {
+    "title": "Lat Pulldown",
+    "muscles": ["Back", "Biceps"]
+  }
+}

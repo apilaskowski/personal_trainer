@@ -1,5 +1,5 @@
 {
-  "_comment": "Exercise-to-muscle mapping. TODO: Can be dynamically populated or augmented from Hevy API /v1/exercise_templates",
+  "_comment": "Exercise-to-muscle mapping. Acts as explicit override or fallback for Hevy templates.",
   "bench press": ["Chest", "Triceps"],
   "incline bench press": ["Chest", "Shoulders"],
   "dumbbell bench press": ["Chest", "Triceps"],
@@ -38,6 +38,10 @@
   "lunge": ["Quads", "Glutes"],
   "walking lunge": ["Quads", "Glutes"],
   "bulgarian split squat": ["Quads", "Glutes"],
+  "wall sit": ["Quads"],
+  "walk sit": ["Quads"],
+  "step up": ["Quads", "Glutes"],
+  "sissy squat": ["Quads"],
 
   "leg curl": ["Hamstrings"],
   "seated leg curl": ["Hamstrings"],

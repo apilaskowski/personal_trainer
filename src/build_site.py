@@ -16,8 +16,9 @@ from src.analyzer import analyze_workouts
 
 def build() -> str:
     """Runs the analysis pipeline and outputs public/data.json."""
-    workouts = get_workouts()
-    analysis = analyze_workouts(workouts)
+    api_key = os.environ.get("HEVY_API_KEY")
+    workouts = get_workouts(api_key=api_key)
+    analysis = analyze_workouts(workouts, api_key=api_key)
 
     public_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "public")
     os.makedirs(public_dir, exist_ok=True)
