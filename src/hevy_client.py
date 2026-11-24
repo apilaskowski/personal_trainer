@@ -55,8 +55,11 @@ def get_workouts(api_key: str = None, page_count: int = 5) -> list[dict]:
 
 def generate_mock_workouts() -> list[dict]:
     """
-    Generates realistic mock workout sessions over the past 14 days
-    reflecting a full body training style with legs alternate.
+    Generates realistic mock workout sessions over the past 14 days.
+    
+    Used for:
+    1. Local offline development & unit testing without needing a live API key.
+    2. Fallback demonstration data if the app runs before HEVY_API_KEY is configured.
     """
     now = datetime.now(timezone.utc)
     return [
