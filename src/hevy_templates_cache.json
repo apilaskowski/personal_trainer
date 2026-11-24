@@ -22,8 +22,10 @@
   },
   "mock-pulldown": {
     "title": "Lat Pulldown",
+    "primary": "Lats",
+    "secondary": ["Biceps"],
     "muscles": [
-      "Back",
+      "Lats",
       "Biceps"
     ]
   },
@@ -41,8 +43,10 @@
   },
   "mock-cable-row": {
     "title": "Seated Cable Row",
+    "primary": "Upper / Mid Back",
+    "secondary": [],
     "muscles": [
-      "Back"
+      "Upper / Mid Back"
     ]
   },
   "mock-ohp": {

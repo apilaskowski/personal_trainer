@@ -6,7 +6,8 @@ All exercise-to-muscle classifications are handled directly via Hevy API templat
 
 DEFAULT_WEEKLY_GOALS = {
     "Chest": 12,
-    "Back": 14,
+    "Lats": 10,
+    "Upper / Mid Back": 8,
     "Quads": 10,
     "Hamstrings": 10,
     "Glutes": 8,
@@ -14,7 +15,9 @@ DEFAULT_WEEKLY_GOALS = {
     "Biceps": 8,
     "Triceps": 8,
     "Calves": 6,
-    "Abs": 6
+    "Hip Adductors": 4,
+    "Hip Abductors": 4,
+    "Abs / Core": 6
 }
 
 DEFAULT_RECOVERY_HOURS = 48.0
@@ -23,7 +26,8 @@ RECOVERY_THRESHOLD_HOURS = 48.0  # Alias for backward compatibility
 # Default recovery threshold hours per muscle group
 DEFAULT_RECOVERY_THRESHOLDS = {
     "Chest": 48.0,
-    "Back": 48.0,
+    "Lats": 48.0,
+    "Upper / Mid Back": 48.0,
     "Quads": 48.0,
     "Hamstrings": 48.0,
     "Glutes": 48.0,
@@ -31,5 +35,7 @@ DEFAULT_RECOVERY_THRESHOLDS = {
     "Biceps": 48.0,
     "Triceps": 48.0,
     "Calves": 48.0,
-    "Abs": 48.0
+    "Hip Adductors": 48.0,
+    "Hip Abductors": 48.0,
+    "Abs / Core": 48.0
 }
