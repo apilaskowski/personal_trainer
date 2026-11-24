@@ -7,7 +7,11 @@ Computes:
 """
 
 from datetime import datetime, timezone
-from src.config import DEFAULT_WEEKLY_GOALS, RECOVERY_THRESHOLD_HOURS
+from src.config import (
+    DEFAULT_WEEKLY_GOALS,
+    DEFAULT_RECOVERY_THRESHOLDS,
+    DEFAULT_RECOVERY_HOURS
+)
 from src.hevy_client import resolve_exercise_muscles
 
 def parse_iso(dt_str: str) -> datetime:
@@ -17,25 +21,34 @@ def parse_iso(dt_str: str) -> datetime:
     # Python 3.11+ standard library natively supports 'Z' and offset formats
     return datetime.fromisoformat(dt_str)
 
-def analyze_workouts(workouts: list[dict], weekly_goals: dict = None, current_time: datetime = None, api_key: str = None) -> dict:
+def analyze_workouts(
+    workouts: list[dict],
+    weekly_goals: dict = None,
+    recovery_thresholds: dict = None,
+    current_time: datetime = None,
+    api_key: str = None
+) -> dict:
     """
     Analyzes workout logs to determine recovery states, volume deficits, and recommendations.
     Accepts an optional current_time for deterministic testing, and api_key for on-demand template resolution.
     """
     weekly_goals = weekly_goals or DEFAULT_WEEKLY_GOALS
+    recovery_thresholds = recovery_thresholds or DEFAULT_RECOVERY_THRESHOLDS
     now = current_time or datetime.now(timezone.utc)
 
     # Initialize stats per muscle group
     muscle_stats = {}
     for muscle, target in weekly_goals.items():
+        threshold = recovery_thresholds.get(muscle, DEFAULT_RECOVERY_HOURS)
         muscle_stats[muscle] = {
             "name": muscle,
             "weekly_target": target,
+            "recovery_threshold_hours": threshold,
             "sets_7d": 0,
             "sets_14d": 0,
             "last_trained": None,
             "hours_since_last": None,
-            "recovery_status": "ready",  # 'ready' (>=48h), 'recovering' (24-48h), 'resting' (<24h)
+            "recovery_status": "ready",
             "recovery_percent": 100
         }
 
@@ -91,6 +104,8 @@ def analyze_workouts(workouts: list[dict], weekly_goals: dict = None, current_ti
     # Compute recovery states, volume deficits, and formatting
     for m, stat in muscle_stats.items():
         hrs = stat["hours_since_last"]
+        threshold = stat.get("recovery_threshold_hours", DEFAULT_RECOVERY_HOURS)
+        half_recovery = threshold / 2.0
 
         if hrs is None:
             # Never trained in window -> fully rested and ready
@@ -98,18 +113,18 @@ def analyze_workouts(workouts: list[dict], weekly_goals: dict = None, current_ti
             stat["recovery_percent"] = 100
             stat["hours_since_last"] = 999.0
             stat["rest_label"] = "Rested (> 7 days)"
-        elif hrs >= RECOVERY_THRESHOLD_HOURS:
+        elif hrs >= threshold:
             stat["recovery_status"] = "ready"
             stat["recovery_percent"] = 100
             days = round(hrs / 24.0, 1)
             stat["rest_label"] = f"{days}d ago ({int(hrs)}h)"
-        elif hrs >= 24.0:
+        elif hrs >= half_recovery:
             stat["recovery_status"] = "recovering"
-            stat["recovery_percent"] = round((hrs / RECOVERY_THRESHOLD_HOURS) * 100)
+            stat["recovery_percent"] = round((hrs / threshold) * 100)
             stat["rest_label"] = f"{int(hrs)}h ago (Recovering)"
         else:
             stat["recovery_status"] = "resting"
-            stat["recovery_percent"] = round((hrs / RECOVERY_THRESHOLD_HOURS) * 100)
+            stat["recovery_percent"] = round((hrs / threshold) * 100)
             stat["rest_label"] = f"{int(hrs)}h ago (Resting)"
 
         # Convert datetime to ISO string for clean JSON serialization
