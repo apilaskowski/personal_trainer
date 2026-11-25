@@ -107,7 +107,37 @@ def analyze_workouts(
         threshold = stat.get("recovery_threshold_hours", DEFAULT_RECOVERY_HOURS)
         half_recovery = threshold / 2.0
 
-        if hrs is None:
+        # Convert datetime to ISO string for clean JSON serialization
+        if stat["last_trained"]:
+            stat["last_trained"] = stat["last_trained"].isoformat()
+
+        # Clean numerical formatting (format whole numbers as ints, half sets as floats)
+        def clean_val(v: float):
+            r = round(v, 1)
+            return int(r) if r % 1 == 0 else r
+
+        stat["sets_7d"] = clean_val(stat["sets_7d"])
+        stat["sets_14d"] = clean_val(stat["sets_14d"])
+
+        # Progress and deficit
+        stat["progress_7d"] = round((stat["sets_7d"] / stat["weekly_target"]) * 100)
+        stat["deficit_7d"] = clean_val(max(0.0, stat["weekly_target"] - stat["sets_7d"]))
+
+        # Recovery vs Volume completion state:
+        # If weekly target is met (deficit == 0), the muscle is "done" (trained enough).
+        # Otherwise, its status is determined by biological recovery ("ready", "recovering", "resting").
+        if stat["deficit_7d"] == 0:
+            stat["recovery_status"] = "done"
+            if hrs is None:
+                stat["recovery_percent"] = 100
+                stat["rest_label"] = "Target Met (Rested)"
+            else:
+                pct = 100 if hrs >= threshold else round((hrs / threshold) * 100)
+                stat["recovery_percent"] = pct
+                days = round(hrs / 24.0, 1)
+                time_str = f"{days}d ago" if days >= 1.0 else f"{int(hrs)}h ago"
+                stat["rest_label"] = f"Target Met ({time_str})"
+        elif hrs is None:
             # Never trained in window -> fully rested and ready
             stat["recovery_status"] = "ready"
             stat["recovery_percent"] = 100
@@ -127,40 +157,32 @@ def analyze_workouts(
             stat["recovery_percent"] = round((hrs / threshold) * 100)
             stat["rest_label"] = f"{int(hrs)}h ago (Resting)"
 
-        # Convert datetime to ISO string for clean JSON serialization
-        if stat["last_trained"]:
-            stat["last_trained"] = stat["last_trained"].isoformat()
-
-        # Clean numerical formatting (format whole numbers as ints, half sets as floats)
-        def clean_val(v: float):
-            r = round(v, 1)
-            return int(r) if r % 1 == 0 else r
-
-        stat["sets_7d"] = clean_val(stat["sets_7d"])
-        stat["sets_14d"] = clean_val(stat["sets_14d"])
-
-        # Progress and deficit
-        stat["progress_7d"] = round((stat["sets_7d"] / stat["weekly_target"]) * 100)
-        stat["deficit_7d"] = clean_val(max(0.0, stat["weekly_target"] - stat["sets_7d"]))
-
     # Determine "What to Train Today"
-    # Rule: Filter for READY muscles (met full required recovery window), sort by largest volume deficit
-    ready_muscles = [s for s in muscle_stats.values() if s["recovery_status"] == "ready"]
+    # Rule: Filter for READY muscles (met full required recovery window AND need volume), sort by largest volume deficit
+    ready_muscles = [s for s in muscle_stats.values() if s["recovery_status"] == "ready" and s["deficit_7d"] > 0]
     ready_muscles.sort(key=lambda x: (x["deficit_7d"], -x["sets_7d"]), reverse=True)
 
-    recommended_focus = [m["name"] for m in ready_muscles if m["deficit_7d"] > 0][:4]
-    if not recommended_focus:
-        # All target goals met, pick the most rested muscles
-        recommended_focus = [m["name"] for m in ready_muscles[:3]]
+    recommended_focus = [m["name"] for m in ready_muscles][:4]
 
-    headline = f"Today's Focus: {', '.join(recommended_focus)}" if recommended_focus else "All Muscles Resting"
+    if recommended_focus:
+        headline = f"Today's Focus: {', '.join(recommended_focus)}"
+        summary = "These muscles have had full required rest and are currently highest priority for your rolling 7-day volume goals."
+    else:
+        # Check if all goals are done vs resting
+        all_done = all(s["recovery_status"] == "done" for s in muscle_stats.values())
+        if all_done:
+            headline = "All Muscle Targets Completed! 🎉"
+            summary = "You have hit your weekly set volume for all muscle groups. Focus on rest or light active recovery."
+        else:
+            headline = "All Muscles Resting or Recovering"
+            summary = "You have muscles needing volume, but they are currently resting or recovering. Take today for recovery."
 
     return {
         "generated_at": now.strftime("%Y-%m-%d %H:%M UTC"),
         "today_recommendation": {
             "focus_muscles": recommended_focus,
             "headline": headline,
-            "summary": "These muscles have had full required rest and are currently highest priority for your rolling 7-day volume goals."
+            "summary": summary
         },
         "muscles": list(muscle_stats.values()),
         "recent_workouts": processed_workouts[:6]

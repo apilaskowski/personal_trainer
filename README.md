@@ -41,10 +41,11 @@ flowchart TD
   * ⏱️ **48 Hours**: Chest, Lats, Upper / Mid Back, Triceps, Glutes, Calves, Hip Adductors, Hip Abductors
   * 💪 **36 Hours**: Biceps
   * ⚡ **24 Hours**: Shoulders, Abs / Core
-* **Dynamic Recovery States**:
-  * 🟢 **Ready** ($\text{hours} \ge \text{threshold}$): Muscle has fully supercompensated and is primed for high-effort training.
-  * 🟡 **Recovering** ($\text{threshold}/2 \le \text{hours} < \text{threshold}$): Intermediate recovery.
-  * 🔴 **Resting** ($\text{hours} < \text{threshold}/2$): Recently trained; needs full rest.
+* **Dynamic Readiness & Completion States**:
+  * 🟢 **Ready** ($\text{hours} \ge \text{threshold}$ and $\text{deficit} > 0$): Muscle has rested and has volume left to train. Actionable for today.
+  * 🟣 **Done** ($\text{deficit} = 0$): Weekly volume goal achieved. Muscle has been trained enough.
+  * 🟡 **Recovering** ($\text{threshold}/2 \le \text{hours} < \text{threshold}$): Intermediate break in progress.
+  * 🔴 **Resting** ($\text{hours} < \text{threshold}/2$): Recently trained; break in progress.
 * *Example scenario*: A hard leg session puts Quads and Hamstrings into resting for 72 hours, while Upper Body muscles remain 🟢 **Ready**.
 
 ### 2. Primary & Secondary Muscle Set Weighting
