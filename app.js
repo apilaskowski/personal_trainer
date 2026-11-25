@@ -72,8 +72,10 @@ function renderMuscles() {
   // Sort: Ready muscles with largest deficits first, then recovering, then resting, then done
   const sorted = [...appData.muscles].sort((a, b) => {
     const statusOrder = { ready: 0, recovering: 1, resting: 2, done: 3 };
-    if (statusOrder[a.recovery_status] !== statusOrder[b.recovery_status]) {
-      return statusOrder[a.recovery_status] - statusOrder[b.recovery_status];
+    const orderA = statusOrder[a.recovery_status] !== undefined ? statusOrder[a.recovery_status] : 99;
+    const orderB = statusOrder[b.recovery_status] !== undefined ? statusOrder[b.recovery_status] : 99;
+    if (orderA !== orderB) {
+      return orderA - orderB;
     }
     return (b.weekly_target - b.sets_7d) - (a.weekly_target - a.sets_7d);
   });
