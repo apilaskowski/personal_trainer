@@ -177,6 +177,17 @@ def analyze_workouts(
             headline = "All Muscles Resting or Recovering"
             summary = "You have muscles needing volume, but they are currently resting or recovering. Take today for recovery."
 
+    # Pre-sort muscles so data.json is delivered in guaranteed priority order:
+    # 1. Ready (sorted by largest deficit)
+    # 2. Recovering
+    # 3. Resting
+    # 4. Done (completed weekly quota, at the bottom)
+    status_priority = {"ready": 0, "recovering": 1, "resting": 2, "done": 3}
+    sorted_muscles = sorted(
+        muscle_stats.values(),
+        key=lambda x: (status_priority.get(x["recovery_status"], 99), -x["deficit_7d"], x["name"])
+    )
+
     return {
         "generated_at": now.strftime("%Y-%m-%d %H:%M UTC"),
         "today_recommendation": {
@@ -184,6 +195,6 @@ def analyze_workouts(
             "headline": headline,
             "summary": summary
         },
-        "muscles": list(muscle_stats.values()),
+        "muscles": sorted_muscles,
         "recent_workouts": processed_workouts[:6]
     }
