@@ -236,6 +236,41 @@ class TestAnalyzer(unittest.TestCase):
         self.assertEqual(muscles["Chest"]["recovery_status"], "ready")
         self.assertIn("Chest", res["today_recommendation"]["focus_muscles"])
 
+    def test_output_muscles_sorted_by_priority(self):
+        """muscles array in output is guaranteed to be sorted: ready -> recovering -> resting -> done."""
+        workouts = [
+            # Lats hit target 15h ago -> done
+            {
+                "id": "w1",
+                "start_time": (self.now - timedelta(hours=15)).isoformat(),
+                "exercises": [
+                    {
+                        "exercise_template_id": "mock-pulldown",
+                        "title": "Lat Pulldown",
+                        "sets": [{"set_type": "normal"} for _ in range(10)]
+                    }
+                ]
+            },
+            # Chest hit 1 set 10h ago -> resting (deficit 9)
+            {
+                "id": "w2",
+                "start_time": (self.now - timedelta(hours=10)).isoformat(),
+                "exercises": [
+                    {
+                        "exercise_template_id": "mock-bench",
+                        "title": "Flat Bench Press",
+                        "sets": [{"set_type": "normal", "weight_kg": 80, "reps": 10}]
+                    }
+                ]
+            }
+        ]
+        goals = {"Quads": 10, "Chest": 10, "Lats": 10}
+        res = analyze_workouts(workouts, weekly_goals=goals, current_time=self.now)
+        statuses = [m["recovery_status"] for m in res["muscles"]]
+
+        # Quads is ready, Chest is resting, Lats is done
+        self.assertEqual(statuses, ["ready", "resting", "done"])
+
     def test_json_serializability(self):
         """Verify the output can be directly serialized to JSON with no datetime errors."""
         res = analyze_workouts([], weekly_goals=self.goals, current_time=self.now)
