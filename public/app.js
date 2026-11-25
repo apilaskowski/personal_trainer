@@ -69,9 +69,9 @@ function renderMuscles() {
 
   const is7d = currentWindow === "7d";
 
-  // Sort: Ready muscles with largest deficits first, then recovering, then resting
+  // Sort: Ready muscles with largest deficits first, then recovering, then resting, then done
   const sorted = [...appData.muscles].sort((a, b) => {
-    const statusOrder = { ready: 0, recovering: 1, resting: 2 };
+    const statusOrder = { ready: 0, recovering: 1, resting: 2, done: 3 };
     if (statusOrder[a.recovery_status] !== statusOrder[b.recovery_status]) {
       return statusOrder[a.recovery_status] - statusOrder[b.recovery_status];
     }
@@ -87,13 +87,16 @@ function renderMuscles() {
     card.className = "muscle-card";
 
     let barColor = "#10b981"; // ready: green
+    if (m.recovery_status === "done") barColor = "#8b5cf6"; // done: purple
     if (m.recovery_status === "recovering") barColor = "#f59e0b"; // yellow
-    if (m.recovery_status === "resting") barColor = "#3b82f6"; // blue
+    if (m.recovery_status === "resting") barColor = "#ef4444"; // red
+
+    const badgeLabel = m.recovery_status === "done" ? "✓ Done" : m.recovery_status;
 
     card.innerHTML = `
       <div class="muscle-card-top">
         <span class="muscle-name">${m.name}</span>
-        <span class="badge-status ${m.recovery_status}">${m.recovery_status}</span>
+        <span class="badge-status ${m.recovery_status}">${badgeLabel}</span>
       </div>
       <div class="muscle-rest-info">Last hit: ${m.rest_label}</div>
       <div class="progress-container">

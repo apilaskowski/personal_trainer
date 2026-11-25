@@ -207,6 +207,35 @@ class TestAnalyzer(unittest.TestCase):
         self.assertEqual(muscles["Quads"]["recovery_status"], "resting")
         self.assertLess(muscles["Quads"]["recovery_percent"], 50)
 
+    def test_done_status_when_volume_target_met(self):
+        """When weekly volume target is met (deficit == 0), status is 'done' rather than 'ready'."""
+        workouts = [
+            {
+                "id": "w1",
+                "start_time": (self.now - timedelta(hours=15)).isoformat(),
+                "exercises": [
+                    {
+                        "exercise_template_id": "mock-pulldown",
+                        "title": "Lat Pulldown",
+                        "sets": [{"set_type": "normal"} for _ in range(10)]
+                    }
+                ]
+            }
+        ]
+        goals = {"Lats": 10, "Chest": 10}
+        res = analyze_workouts(workouts, weekly_goals=goals, current_time=self.now)
+        muscles = {m["name"]: m for m in res["muscles"]}
+
+        # Lats: 10 sets completed (deficit 0) -> status is 'done'
+        self.assertEqual(muscles["Lats"]["deficit_7d"], 0)
+        self.assertEqual(muscles["Lats"]["recovery_status"], "done")
+        self.assertNotIn("Lats", res["today_recommendation"]["focus_muscles"])
+
+        # Chest: 0 sets completed (deficit 10), rested -> status is 'ready'
+        self.assertEqual(muscles["Chest"]["deficit_7d"], 10)
+        self.assertEqual(muscles["Chest"]["recovery_status"], "ready")
+        self.assertIn("Chest", res["today_recommendation"]["focus_muscles"])
+
     def test_json_serializability(self):
         """Verify the output can be directly serialized to JSON with no datetime errors."""
         res = analyze_workouts([], weekly_goals=self.goals, current_time=self.now)
