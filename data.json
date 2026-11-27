@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-27 09:27 UTC",
+  "generated_at": "2026-11-27 14:48 UTC",
   "today_recommendation": {
     "focus_muscles": [],
     "headline": "All Muscles Resting or Recovering",
@@ -7,60 +7,18 @@
   },
   "muscles": [
     {
-      "name": "Lats",
-      "weekly_target": 10,
-      "recovery_threshold_hours": 48.0,
-      "sets_7d": 7.5,
-      "sets_14d": 15.5,
-      "last_trained": "2026-11-27T08:07:54+00:00",
-      "hours_since_last": 1.3,
-      "recovery_status": "resting",
-      "recovery_percent": 3,
-      "progress_7d": 75,
-      "deficit_7d": 2.5,
-      "rest_label": "1h ago (Resting)"
-    },
-    {
       "name": "Quads",
       "weekly_target": 8,
       "recovery_threshold_hours": 72.0,
       "sets_7d": 6,
       "sets_14d": 12,
       "last_trained": "2026-11-25T22:02:13+00:00",
-      "hours_since_last": 35.4,
-      "recovery_status": "resting",
-      "recovery_percent": 49,
+      "hours_since_last": 40.8,
+      "recovery_status": "recovering",
+      "recovery_percent": 57,
       "progress_7d": 75,
       "deficit_7d": 2,
-      "rest_label": "35h ago (Resting)"
-    },
-    {
-      "name": "Glutes",
-      "weekly_target": 6,
-      "recovery_threshold_hours": 48.0,
-      "sets_7d": 4.5,
-      "sets_14d": 12,
-      "last_trained": "2026-11-27T08:07:54+00:00",
-      "hours_since_last": 1.3,
-      "recovery_status": "resting",
-      "recovery_percent": 3,
-      "progress_7d": 75,
-      "deficit_7d": 1.5,
-      "rest_label": "1h ago (Resting)"
-    },
-    {
-      "name": "Hip Abductors",
-      "weekly_target": 4,
-      "recovery_threshold_hours": 48.0,
-      "sets_7d": 3,
-      "sets_14d": 3,
-      "last_trained": "2026-11-27T08:07:54+00:00",
-      "hours_since_last": 1.3,
-      "recovery_status": "resting",
-      "recovery_percent": 3,
-      "progress_7d": 75,
-      "deficit_7d": 1,
-      "rest_label": "1h ago (Resting)"
+      "rest_label": "40h ago (Recovering)"
     },
     {
       "name": "Hamstrings",
@@ -69,12 +27,54 @@
       "sets_7d": 7.5,
       "sets_14d": 14.5,
       "last_trained": "2026-11-25T22:02:13+00:00",
-      "hours_since_last": 35.4,
-      "recovery_status": "resting",
-      "recovery_percent": 49,
+      "hours_since_last": 40.8,
+      "recovery_status": "recovering",
+      "recovery_percent": 57,
       "progress_7d": 94,
       "deficit_7d": 0.5,
-      "rest_label": "35h ago (Resting)"
+      "rest_label": "40h ago (Recovering)"
+    },
+    {
+      "name": "Lats",
+      "weekly_target": 10,
+      "recovery_threshold_hours": 48.0,
+      "sets_7d": 7.5,
+      "sets_14d": 15.5,
+      "last_trained": "2026-11-27T08:07:54+00:00",
+      "hours_since_last": 6.7,
+      "recovery_status": "resting",
+      "recovery_percent": 14,
+      "progress_7d": 75,
+      "deficit_7d": 2.5,
+      "rest_label": "6h ago (Resting)"
+    },
+    {
+      "name": "Glutes",
+      "weekly_target": 6,
+      "recovery_threshold_hours": 48.0,
+      "sets_7d": 4.5,
+      "sets_14d": 12,
+      "last_trained": "2026-11-27T08:07:54+00:00",
+      "hours_since_last": 6.7,
+      "recovery_status": "resting",
+      "recovery_percent": 14,
+      "progress_7d": 75,
+      "deficit_7d": 1.5,
+      "rest_label": "6h ago (Resting)"
+    },
+    {
+      "name": "Hip Abductors",
+      "weekly_target": 4,
+      "recovery_threshold_hours": 48.0,
+      "sets_7d": 3,
+      "sets_14d": 3,
+      "last_trained": "2026-11-27T08:07:54+00:00",
+      "hours_since_last": 6.7,
+      "recovery_status": "resting",
+      "recovery_percent": 14,
+      "progress_7d": 75,
+      "deficit_7d": 1,
+      "rest_label": "6h ago (Resting)"
     },
     {
       "name": "Abs / Core",
@@ -83,12 +83,12 @@
       "sets_7d": 15.5,
       "sets_14d": 25,
       "last_trained": "2026-11-27T08:07:54+00:00",
-      "hours_since_last": 1.3,
+      "hours_since_last": 6.7,
       "recovery_status": "done",
-      "recovery_percent": 5,
+      "recovery_percent": 28,
       "progress_7d": 194,
       "deficit_7d": 0,
-      "rest_label": "Target Met (1h ago)"
+      "rest_label": "Target Met (6h ago)"
     },
     {
       "name": "Biceps",
@@ -97,12 +97,12 @@
       "sets_7d": 15.5,
       "sets_14d": 21.5,
       "last_trained": "2026-11-27T08:07:54+00:00",
-      "hours_since_last": 1.3,
+      "hours_since_last": 6.7,
       "recovery_status": "done",
-      "recovery_percent": 4,
+      "recovery_percent": 19,
       "progress_7d": 129,
       "deficit_7d": 0,
-      "rest_label": "Target Met (1h ago)"
+      "rest_label": "Target Met (6h ago)"
     },
     {
       "name": "Calves",
@@ -111,12 +111,12 @@
       "sets_7d": 6,
       "sets_14d": 6,
       "last_trained": "2026-11-25T22:02:13+00:00",
-      "hours_since_last": 35.4,
+      "hours_since_last": 40.8,
       "recovery_status": "done",
-      "recovery_percent": 74,
+      "recovery_percent": 85,
       "progress_7d": 120,
       "deficit_7d": 0,
-      "rest_label": "Target Met (1.5d ago)"
+      "rest_label": "Target Met (1.7d ago)"
     },
     {
       "name": "Chest",
@@ -125,12 +125,12 @@
       "sets_7d": 16.5,
       "sets_14d": 30.5,
       "last_trained": "2026-11-27T08:07:54+00:00",
-      "hours_since_last": 1.3,
+      "hours_since_last": 6.7,
       "recovery_status": "done",
-      "recovery_percent": 3,
+      "recovery_percent": 14,
       "progress_7d": 103,
       "deficit_7d": 0,
-      "rest_label": "Target Met (1h ago)"
+      "rest_label": "Target Met (6h ago)"
     },
     {
       "name": "Hip Adductors",
@@ -139,12 +139,12 @@
       "sets_7d": 4,
       "sets_14d": 6,
       "last_trained": "2026-11-27T08:07:54+00:00",
-      "hours_since_last": 1.3,
+      "hours_since_last": 6.7,
       "recovery_status": "done",
-      "recovery_percent": 3,
+      "recovery_percent": 14,
       "progress_7d": 100,
       "deficit_7d": 0,
-      "rest_label": "Target Met (1h ago)"
+      "rest_label": "Target Met (6h ago)"
     },
     {
       "name": "Shoulders",
@@ -153,12 +153,12 @@
       "sets_7d": 22.5,
       "sets_14d": 37,
       "last_trained": "2026-11-27T08:07:54+00:00",
-      "hours_since_last": 1.3,
+      "hours_since_last": 6.7,
       "recovery_status": "done",
-      "recovery_percent": 5,
+      "recovery_percent": 28,
       "progress_7d": 102,
       "deficit_7d": 0,
-      "rest_label": "Target Met (1h ago)"
+      "rest_label": "Target Met (6h ago)"
     },
     {
       "name": "Triceps",
@@ -167,12 +167,12 @@
       "sets_7d": 15,
       "sets_14d": 28,
       "last_trained": "2026-11-27T08:07:54+00:00",
-      "hours_since_last": 1.3,
+      "hours_since_last": 6.7,
       "recovery_status": "done",
-      "recovery_percent": 3,
+      "recovery_percent": 14,
       "progress_7d": 150,
       "deficit_7d": 0,
-      "rest_label": "Target Met (1h ago)"
+      "rest_label": "Target Met (6h ago)"
     },
     {
       "name": "Upper / Mid Back",
@@ -181,12 +181,12 @@
       "sets_7d": 10.5,
       "sets_14d": 18.5,
       "last_trained": "2026-11-27T08:07:54+00:00",
-      "hours_since_last": 1.3,
+      "hours_since_last": 6.7,
       "recovery_status": "done",
-      "recovery_percent": 3,
+      "recovery_percent": 14,
       "progress_7d": 131,
       "deficit_7d": 0,
-      "rest_label": "Target Met (1h ago)"
+      "rest_label": "Target Met (6h ago)"
     }
   ],
   "recent_workouts": [
@@ -194,7 +194,7 @@
       "id": "ba7247f0-cf45-4fc7-b374-b9fe319cb847",
       "title": "FBW: M&K \ud83c\uddf2\ud83c\uddf9",
       "date": "2026-11-27 08:07",
-      "hours_ago": 1.3,
+      "hours_ago": 6.7,
       "total_sets": 26,
       "muscles": [
         "Abs / Core",
@@ -213,7 +213,7 @@
       "id": "0ab9aa0c-c9af-4e4e-9223-8812114fbdc0",
       "title": "Legs + Shoulders: Work",
       "date": "2026-11-25 22:02",
-      "hours_ago": 35.4,
+      "hours_ago": 40.8,
       "total_sets": 21,
       "muscles": [
         "Biceps",
@@ -228,7 +228,7 @@
       "id": "4d21be69-d829-4415-b5ac-12b1d3fe3d07",
       "title": "UB: with Wife vol. 2 \ud83c\uddf2\ud83c\uddf9",
       "date": "2026-11-23 19:28",
-      "hours_ago": 86.0,
+      "hours_ago": 91.3,
       "total_sets": 19,
       "muscles": [
         "Abs / Core",
@@ -243,7 +243,7 @@
       "id": "3ad915c5-2341-4fea-aff6-2b1b839b2160",
       "title": "Micro Crap w/Wife Posnania",
       "date": "2026-11-23 18:51",
-      "hours_ago": 86.6,
+      "hours_ago": 92.0,
       "total_sets": 3,
       "muscles": [
         "Chest",
@@ -255,7 +255,7 @@
       "id": "da92bc98-cb79-49ed-9cc9-efb9d22e7bdf",
       "title": "FBW: Alone journey Posnania",
       "date": "2026-11-21 10:38",
-      "hours_ago": 142.8,
+      "hours_ago": 148.2,
       "total_sets": 32,
       "muscles": [
         "Abs / Core",
@@ -274,7 +274,7 @@
       "id": "525c9511-d144-4886-bfd8-baeb966129a0",
       "title": "Wife",
       "date": "2026-11-17 18:11",
-      "hours_ago": 231.3,
+      "hours_ago": 236.6,
       "total_sets": 1,
       "muscles": []
     }
