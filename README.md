@@ -15,7 +15,7 @@ flowchart TD
     end
 
     subgraph CI["2. GitHub Actions Automation"]
-        B["Scheduled Cron (Daily 5:00 UTC)\n& On-Push Trigger"]
+        B["Scheduled Cron (Every 6h: 06:00, 12:00, 18:00, 00:00 CET)\n& On-Push Trigger"]
         C["Python Engine\n(HEVY_API_KEY)"]
         B --> C
         A --> C
